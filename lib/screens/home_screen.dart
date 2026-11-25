@@ -3,17 +3,30 @@ import 'package:pathfinder_ai/data/dummy_data.dart';
 import 'package:pathfinder_ai/screens/results_screen.dart';
 import 'package:pathfinder_ai/theme/app_theme.dart';
 
-/// Home tab. [goal] comes from MainShell. [onOpenTab] switches the bottom bar.
+/// Home tab. [goal] and the scores come from MainShell. [onOpenTab] switches tabs.
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key, required this.goal, required this.onOpenTab});
+  const HomeScreen({
+    super.key,
+    required this.goal,
+    required this.careerFit,
+    required this.futureProof,
+    required this.onOpenTab,
+  });
 
   final String goal;
+  final int careerFit;
+  final int futureProof;
   final ValueChanged<int> onOpenTab;
 
   void _openResults(BuildContext context) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (_) => const ResultsScreen()),
+      MaterialPageRoute(
+        builder: (_) => ResultsScreen(
+          careerFit: careerFit,
+          futureProof: futureProof,
+        ),
+      ),
     );
   }
 
@@ -66,12 +79,9 @@ class HomeScreen extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 16),
-                const _ScoreBar(label: 'Career Fit', score: careerFitScore),
+                _ScoreBar(label: 'Career Fit', score: careerFit),
                 const SizedBox(height: 12),
-                const _ScoreBar(
-                  label: 'Future-Proof',
-                  score: futureProofScore,
-                ),
+                _ScoreBar(label: 'Future-Proof', score: futureProof),
               ],
             ),
           ),

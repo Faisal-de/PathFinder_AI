@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "317891043229",
+    "project_id": "pathfinder-ai-862c0",
+    "storage_bucket": "pathfinder-ai-862c0.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:317891043229:android:aa000ae81b752e0210d974",
+        "android_client_info": {
+          "package_name": "com.example.pathfinder_ai"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAeftMB4-7iChD-lrRhHf2m90oQwB3f0io"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

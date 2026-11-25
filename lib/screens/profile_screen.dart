@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pathfinder_ai/data/dummy_data.dart';
 import 'package:pathfinder_ai/screens/login_screen.dart';
+import 'package:pathfinder_ai/services/auth_service.dart';
 import 'package:pathfinder_ai/theme/app_theme.dart';
 
 /// Profile tab. [onGoalSaved] sends the new goal up to MainShell.
@@ -12,7 +13,7 @@ class ProfileScreen extends StatefulWidget {
   });
 
   final String goal;
-  final ValueChanged<String> onGoalSaved;
+  final Future<String?> Function(String goal) onGoalSaved;
 
   @override
   State<ProfileScreen> createState() => _ProfileScreenState();
@@ -36,18 +37,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
     super.dispose();
   }
 
-  void _save() {
-    widget.onGoalSaved(_goalController.text.trim());
+  Future<void> _save() async {
+    final error = await widget.onGoalSaved(_goalController.text.trim());
+    if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Career goal saved.'),
+      SnackBar(
+        content: Text(error ?? 'Career goal saved.'),
         behavior: SnackBarBehavior.floating,
-        backgroundColor: AppColors.primary,
+        backgroundColor: error == null ? AppColors.primary : AppColors.error,
       ),
     );
   }
 
-  void _logout() {
+  Future<void> _logout() async {
+    await AuthService.signOut();
+    if (!mounted) return;
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (_) => const LoginScreen()),
@@ -92,7 +96,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   minLines: 2,
                   maxLines: 4,
                   decoration: const InputDecoration(
-                    hintText: 'Example: Become a mobile app developer',
+                    hintText: 'Example: Close one skill gap and follow the roadmap',
                   ),
                 ),
                 const SizedBox(height: 12),

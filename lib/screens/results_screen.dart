@@ -2,9 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:pathfinder_ai/data/dummy_data.dart';
 import 'package:pathfinder_ai/theme/app_theme.dart';
 
-/// Sample Career Fit scores, skill gaps, and pivot steps. Opened with Navigator.push.
+/// Career Fit scores, skill gaps, and pivot steps. Opened with Navigator.push.
 class ResultsScreen extends StatelessWidget {
-  const ResultsScreen({super.key});
+  const ResultsScreen({
+    super.key,
+    required this.careerFit,
+    required this.futureProof,
+  });
+
+  final int careerFit;
+  final int futureProof;
 
   @override
   Widget build(BuildContext context) {
@@ -13,14 +20,14 @@ class ResultsScreen extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.fromLTRB(20, 8, 20, 20),
         children: [
-          const Card(
+          Card(
             child: Padding(
-              padding: EdgeInsets.all(16),
+              padding: const EdgeInsets.all(16),
               child: Column(
                 children: [
-                  _ScoreBar(label: 'Career Fit', score: careerFitScore),
-                  SizedBox(height: 12),
-                  _ScoreBar(label: 'Future-Proof', score: futureProofScore),
+                  _ScoreBar(label: 'Career Fit', score: careerFit),
+                  const SizedBox(height: 12),
+                  _ScoreBar(label: 'Future-Proof', score: futureProof),
                 ],
               ),
             ),

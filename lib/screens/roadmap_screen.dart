@@ -1,19 +1,47 @@
 import 'package:flutter/material.dart';
 import 'package:pathfinder_ai/data/dummy_data.dart';
+import 'package:pathfinder_ai/services/user_data_service.dart';
 import 'package:pathfinder_ai/theme/app_theme.dart';
 
-/// Roadmap tab. [_done] is one checkbox per phase. The first phase starts done.
+/// Roadmap tab. [_done] is one checkbox per phase, based on saved phase ids.
 class RoadmapScreen extends StatefulWidget {
-  const RoadmapScreen({super.key});
+  const RoadmapScreen({super.key, required this.completedPhaseIds});
+
+  final List<String> completedPhaseIds;
 
   @override
   State<RoadmapScreen> createState() => _RoadmapScreenState();
 }
 
 class _RoadmapScreenState extends State<RoadmapScreen> {
-  late final List<bool> _done = [
-    for (var i = 0; i < roadmapPhases.length; i++) i == 0,
-  ];
+  late final List<bool> _done;
+
+  @override
+  void initState() {
+    super.initState();
+    _done = [
+      for (final phase in roadmapPhases)
+        widget.completedPhaseIds.contains(phase.id),
+    ];
+  }
+
+  Future<void> _toggle(int index, bool value) async {
+    setState(() => _done[index] = value);
+    final ids = [
+      for (var i = 0; i < roadmapPhases.length; i++)
+        if (_done[i]) roadmapPhases[i].id,
+    ];
+    final error = await UserDataService.saveCompletedPhaseIds(ids);
+    if (error != null && mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(error),
+          behavior: SnackBarBehavior.floating,
+          backgroundColor: AppColors.error,
+        ),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -57,9 +85,7 @@ class _RoadmapScreenState extends State<RoadmapScreen> {
                 padding: const EdgeInsets.only(top: 4),
                 child: Text(roadmapPhases[i].detail),
               ),
-              onChanged: (value) {
-                setState(() => _done[i] = value ?? false);
-              },
+              onChanged: (value) => _toggle(i, value ?? false),
             ),
           ),
           const SizedBox(height: 12),

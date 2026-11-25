@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pathfinder_ai/screens/main_shell.dart';
+import 'package:pathfinder_ai/services/auth_service.dart';
 import 'package:pathfinder_ai/theme/app_theme.dart';
 
 /// Login and sign up share this screen. [_isSignUp] switches the form.
@@ -36,17 +37,24 @@ class _LoginScreenState extends State<LoginScreen> {
     });
   }
 
-  void _submit() {
+  Future<void> _submit() async {
     setState(() => _authError = null);
     if (!_formKey.currentState!.validate()) {
       return;
     }
 
-    // Demo hook: password "wrong" stands in for a failed Firebase sign-in.
-    if (_passwordController.text == 'wrong') {
-      setState(() {
-        _authError = 'Could not sign in. Check your email and password.';
-      });
+    final error = _isSignUp
+        ? await AuthService.signUp(
+            email: _emailController.text.trim(),
+            password: _passwordController.text,
+          )
+        : await AuthService.signIn(
+            email: _emailController.text.trim(),
+            password: _passwordController.text,
+          );
+    if (!mounted) return;
+    if (error != null) {
+      setState(() => _authError = error);
       return;
     }
 

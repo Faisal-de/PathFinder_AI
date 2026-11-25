@@ -4,8 +4,8 @@ class DummyUser {
   static const email = 'student@example.com';
 }
 
-/// Shown on Home until the student saves a new goal on Profile.
-const starterCareerGoal = 'Become a mobile app developer';
+/// Shown on Home until a new goal is saved on Profile.
+const starterCareerGoal = 'Find a path with a strong Career Fit score';
 
 /// Sample scores from 0 to 100. Later these can come from an assessment result.
 const careerFitScore = 76;
@@ -52,28 +52,33 @@ const assessmentQuestions = [
   ),
 ];
 
-/// One phase on the sample career roadmap.
+/// One phase on the sample career roadmap. [id] is stored in Firestore.
 class RoadmapPhase {
-  const RoadmapPhase(this.title, this.detail);
+  const RoadmapPhase(this.id, this.title, this.detail);
 
+  final String id;
   final String title;
   final String detail;
 }
 
 const roadmapPhases = [
   RoadmapPhase(
+    'fundamentals',
     'Learn the fundamentals',
     'Cover core programming and problem solving.',
   ),
   RoadmapPhase(
+    'projects',
     'Build two portfolio projects',
     'Ship small apps you can explain in an interview.',
   ),
   RoadmapPhase(
+    'interviews',
     'Practice interviews',
     'Walk through projects and common technical questions.',
   ),
   RoadmapPhase(
+    'applications',
     'Apply for internships',
     'Send a short list of targeted applications.',
   ),

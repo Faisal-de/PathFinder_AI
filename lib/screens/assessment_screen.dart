@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:pathfinder_ai/data/dummy_data.dart';
 import 'package:pathfinder_ai/screens/results_screen.dart';
+import 'package:pathfinder_ai/services/user_data_service.dart';
 import 'package:pathfinder_ai/theme/app_theme.dart';
 
 /// Assessment tab. [_step] is the current question. [_answers] stores
 /// the selected option index for each question.
 class AssessmentScreen extends StatefulWidget {
-  const AssessmentScreen({super.key});
+  const AssessmentScreen({super.key, required this.onScoresSaved});
+
+  /// Called after scores are stored so Home can reload them.
+  final Future<void> Function() onScoresSaved;
 
   @override
   State<AssessmentScreen> createState() => _AssessmentScreenState();
@@ -19,10 +23,33 @@ class _AssessmentScreenState extends State<AssessmentScreen> {
     null,
   );
 
-  void _openResults() {
+  Future<void> _openResults() async {
+    final error = await UserDataService.saveScores(
+      careerFit: careerFitScore,
+      futureProof: futureProofScore,
+    );
+    if (!mounted) return;
+    if (error != null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(error),
+          behavior: SnackBarBehavior.floating,
+          backgroundColor: AppColors.error,
+        ),
+      );
+      return;
+    }
+
+    await widget.onScoresSaved();
+    if (!mounted) return;
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (_) => const ResultsScreen()),
+      MaterialPageRoute(
+        builder: (_) => const ResultsScreen(
+          careerFit: careerFitScore,
+          futureProof: futureProofScore,
+        ),
+      ),
     );
   }
 
